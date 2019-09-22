@@ -5,7 +5,7 @@ package client;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import message.RpcResponseMessage;
+import core.message.RpcResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

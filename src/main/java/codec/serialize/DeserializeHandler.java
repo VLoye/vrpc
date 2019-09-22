@@ -1,4 +1,4 @@
-package serialize;
+package codec.serialize;
 /**
  * Created by VLoye on 2019/9/10.
  */
@@ -26,12 +26,21 @@ public class DeserializeHandler extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        logger.info("entry DeserializeHandler");
         int len = byteBuf.readableBytes();
         byte[] bytes = new byte[len];
-        logger.info(String.valueOf(len));
         byteBuf.readBytes(bytes);
-        Object o = serialilze.deSerialize(bytes);
+//        logger.info(new String(bytes));
+        Object o = null;
+        try{
+            o = serialilze.deSerialize(bytes);
+        }catch (Exception e){
+            logger.warn("Unknown Message format, discard it.");
+            byteBuf.clear();
+        }
         list.add(o);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     }
 }

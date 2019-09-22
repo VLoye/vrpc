@@ -3,12 +3,12 @@ package core;
  * Created by VLoye on 2019/8/30.
  */
 
-import message.RpcRequestMessage;
-import message.RpcResponseMessage;
+import core.message.RpcRequestMessage;
+import core.message.RpcResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.RpcServer;
-import service.AbstractService;
+import server.service.AbstractService;
 
 import java.lang.reflect.Method;
 
@@ -41,7 +41,6 @@ public class InvocationTask implements Runnable {
         Object result = null;
         try {
             result = method.invoke(instance, msg.getArgs());
-            logger.info(result.toString());
         } catch (Exception e) {
             logger.error("Invocation failure, cause by: {}", e);
             isSuccess = false;

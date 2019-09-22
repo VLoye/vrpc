@@ -7,8 +7,8 @@ import com.alibaba.fastjson.JSONObject;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import message.RpcRequestMessage;
-import service.AbstractService;
+import core.message.RpcRequestMessage;
+import server.service.AbstractService;
 
 import java.io.Serializable;
 

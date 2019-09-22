@@ -14,6 +14,8 @@ import lombok.Data;
 public class HearBeatConfig {
     private boolean useful = false;
     //心跳报文
-    private Object msg = "msg".getBytes();
-    private Object ack = "ack".getBytes();
+    private byte[] msg = "msg".getBytes();
+    private byte[] ack = "ack".getBytes();
+
+
 }

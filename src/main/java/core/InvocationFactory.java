@@ -8,6 +8,7 @@ package core;
  * @Classname InvocationFactory
  * @Description
  **/
+@Deprecated
 public class InvocationFactory {
 
     public static IInvocation getInvocation(){

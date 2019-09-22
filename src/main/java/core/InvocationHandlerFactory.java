@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationHandler;
  * @Classname InvocationHandlerFactory
  * @Description
  **/
+@Deprecated
 public class InvocationHandlerFactory {
 
     public static InvocationHandler getInvocation() {

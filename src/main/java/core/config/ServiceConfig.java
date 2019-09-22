@@ -21,4 +21,5 @@ public class ServiceConfig {
     private long sessionTimeOut = 30000;
     private String charset = "UTF-8";
     private HearBeatConfig hearBeatConfig;
+
 }

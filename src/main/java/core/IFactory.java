@@ -8,6 +8,7 @@ package core;
  * @Classname IFactory
  * @Description
  **/
+@Deprecated
 public interface IFactory<T> {
     T get();
 

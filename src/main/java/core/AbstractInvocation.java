@@ -4,18 +4,19 @@ package core;
  */
 
 
-import message.RpcMessage;
+import core.message.RpcMessage;
 
 /**
  * @author V
  * @Classname AbstractInvocation
  * @Description
  **/
+@Deprecated
 public abstract class AbstractInvocation implements IInvocation {
 
     @Override
     public RpcResult invoke(RpcMessage message) {
-//        return ServiceFactory.getService(message.get).call(message);
+//        return ServiceFactory.getService(core.message.get).call(core.message);
         return null;
     }
 

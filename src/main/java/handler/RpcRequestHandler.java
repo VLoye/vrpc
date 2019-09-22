@@ -6,12 +6,12 @@ package handler;
 import core.InvocationTask;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import message.RpcMessage;
-import message.RpcRequestMessage;
+import core.message.RpcMessage;
+import core.message.RpcRequestMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.RpcServer;
-import service.AbstractService;
+import server.service.AbstractService;
 
 
 /**

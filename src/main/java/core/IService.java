@@ -4,7 +4,7 @@ package core;
  */
 
 import core.config.ServiceConfig;
-import message.RpcMessage;
+import core.message.RpcMessage;
 
 /**
  * @author V

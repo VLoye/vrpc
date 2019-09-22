@@ -8,7 +8,7 @@ import core.config.ServiceConfig;
 import core.exc.RpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.ServiceFactory;
+import server.service.ServiceFactory;
 
 import java.util.List;
 import java.util.Map;

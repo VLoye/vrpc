@@ -1,4 +1,4 @@
-package service;
+package server.service;
 /**
  * Created by VLoye on 2019/8/17.
  */
@@ -26,7 +26,7 @@ public class ServiceFactory {
             service = (IService) clazz.newInstance();
             service.setConfig(config);
         } catch (Exception e) {
-            throw new InitializationException("Could not found service: " + className);
+            throw new InitializationException("Could not found server.service: " + className);
         }
         return service;
     }

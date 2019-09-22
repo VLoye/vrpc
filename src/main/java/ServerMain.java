@@ -3,6 +3,7 @@
  */
 
 import client.AService;
+import core.config.HearBeatConfig;
 import core.config.RpcConfig;
 import core.config.ServiceConfig;
 import core.exc.RpcException;
@@ -22,12 +23,15 @@ public class ServerMain {
 
     public static void main(String[] args) throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
+        HearBeatConfig hearBeatConfig = new HearBeatConfig();
+        hearBeatConfig.setUseful(true);
 
         RpcConfig config = new RpcConfig();
         List<ServiceConfig> serviceConfigs = new ArrayList<ServiceConfig>();
         ServiceConfig serviceConfig = new ServiceConfig();
-        serviceConfig.setServiceClassName("service.JSONLongService");
+        serviceConfig.setServiceClassName("server.service.JDKSerializeService");
         serviceConfigs.add(serviceConfig);
+        serviceConfig.setHearBeatConfig(hearBeatConfig);
         config.setConfigs(serviceConfigs);
 
         try {

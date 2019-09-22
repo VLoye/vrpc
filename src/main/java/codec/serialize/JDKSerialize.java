@@ -1,4 +1,4 @@
-package serialize;
+package codec.serialize;
 /**
  * Created by VLoye on 2019/9/10.
  */

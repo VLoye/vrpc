@@ -1,4 +1,4 @@
-package service;
+package server.service;
 /**
  * Created by VLoye on 2019/8/17.
  */
@@ -7,6 +7,8 @@ import common.RpcUtil;
 import core.IService;
 import core.ServiceStatus;
 import core.config.ServiceConfig;
+import handler.HearbeatHandler;
+import handler.RemoveConnIdleStateHandler;
 import handler.RpcRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
@@ -15,13 +17,14 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.AttributeKey;
-import message.RpcMessage;
+import core.message.RpcMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import serialize.DeserializeHandler;
-import serialize.JDKSerialize;
-import serialize.SerializeHandler;
+import codec.serialize.DeserializeHandler;
+import codec.serialize.JDKSerialize;
+import codec.serialize.SerializeHandler;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,13 +78,10 @@ public abstract class AbstractService implements IService {
                         socketChannel.attr(ATTR_CHANNEL_KEY).set(uuid);
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new DelimiterBasedFrameDecoder(2048,Unpooled.copiedBuffer(splitDelimiter)));
-//                        pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
-//                        pipeline.addLast(ProtocolFactory.getEncoder());
-//                        pipeline.addLast(ProtocolFactory.getDecoder());
-//                        pipeline.addLast(new StringToRequestHandler());
-//                        pipeline.addLast(new ResponseToByteHandler());
                         pipeline.addLast(new DeserializeHandler(new JDKSerialize()));
                         pipeline.addLast(new SerializeHandler(new JDKSerialize()));
+                        pipeline.addLast(new IdleStateHandler(60,0,0));
+                        pipeline.addLast(new HearbeatHandler(config.getHearBeatConfig()));
                         pipeline.addLast(new RpcRequestHandler());
                     }
                 });

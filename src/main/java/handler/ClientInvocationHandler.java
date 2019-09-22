@@ -5,7 +5,7 @@ package handler;
 
 import core.IInvocation;
 import core.RpcResult;
-import message.RpcMessage;
+import core.message.RpcMessage;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
  * @Classname ClientInvocationHandler
  * @Description
  **/
+@Deprecated
 public class ClientInvocationHandler implements InvocationHandler {
     private IInvocation invocation;
 

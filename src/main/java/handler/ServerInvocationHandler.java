@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
  * @Classname ServerInvocationHandler
  * @Description
  **/
+@Deprecated
 public class ServerInvocationHandler<T> implements InvocationHandler{
 
     private T instance;

@@ -9,6 +9,7 @@ package core;
  * @Classname DefaultInvocation
  * @Description
  **/
+@Deprecated
 public class DefaultInvocation extends AbstractInvocation{
 
 

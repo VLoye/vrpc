@@ -5,7 +5,9 @@ package client;
 
 import common.RpcUtil;
 import core.ServiceStatus;
+import core.config.HearBeatConfig;
 import core.exc.InitializationException;
+import core.exc.RpcException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -13,13 +15,14 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import message.RpcRequestMessage;
+import core.message.RpcRequestMessage;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import serialize.DeserializeHandler;
-import serialize.JDKSerialize;
-import serialize.SerializeHandler;
-import service.AbstractService;
+import codec.serialize.DeserializeHandler;
+import codec.serialize.JDKSerialize;
+import codec.serialize.SerializeHandler;
+import server.service.AbstractService;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +40,8 @@ public class RpcClient {
     private String host= "127.0.0.1";
     private int port=9999;
     private ServiceStatus status = ServiceStatus.NEW;
+    private ClientConfig config;
+    private boolean isOpen;
 
     public static ConcurrentHashMap<Integer, ResponseFuture> futuresMap = new ConcurrentHashMap<Integer, ResponseFuture>();
 
@@ -53,6 +58,10 @@ public class RpcClient {
         this.port = port;
     }
 
+    public RpcClient(ClientConfig config) {
+        this.config = config;
+    }
+
     private void init() throws InitializationException {
         bootstrap = new Bootstrap();
         group = new NioEventLoopGroup(2);
@@ -63,12 +72,11 @@ public class RpcClient {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new DelimiterBasedFrameDecoder(2048, Unpooled.copiedBuffer(AbstractService.splitDelimiter)));
-//                        pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
-//                        pipeline.addLast(new StringToResponseHandler());
                         pipeline.addLast(new DeserializeHandler(new JDKSerialize()));
                         pipeline.addLast(new SerializeHandler(new JDKSerialize()));
+                        pipeline.addLast(new IdleStateHandler(0,0,30));
+                        pipeline.addLast(new CHeartbeatHandler(config.getHearBeatConfig()));
                         pipeline.addLast(new ResponseHandler());
-//                        pipeline.addLast(new RequestToByteHandler());
                     }
                 });
     }
@@ -80,13 +88,21 @@ public class RpcClient {
         ChannelFuture future = null;
         try {
             channel = bootstrap.connect(new InetSocketAddress(host,port)).sync().channel();
+            isOpen = true;
         } catch (InterruptedException e) {
             logger.error(e.getMessage());
         }
         logger.info("connect to rpc server[{}:{}] success",host,port);
     }
 
-    public ResponseFuture call(RpcRequestMessage message){
+    public boolean isOpen(){
+        return isOpen && channel.isActive();
+    }
+
+    public ResponseFuture call(RpcRequestMessage message) throws RpcException {
+        if(!isOpen()){
+            throw new RpcException("client conn is closed.");
+        }
         ResponseFuture future = new ResponseFuture();
         futuresMap.put(message.getId(),future);
         try {
@@ -97,16 +113,21 @@ public class RpcClient {
 //        .addListener(new ChannelFutureListener() {
 //            @Override
 //            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-//                logger.debug("send message success.");
+//                logger.debug("send core.message success.");
 //            }
 //        });
         return future;
     }
 
 
-    public static void main(String[] args) throws NoSuchMethodException, InterruptedException, ExecutionException, TimeoutException {
+    public static void main(String[] args) throws NoSuchMethodException, InterruptedException, ExecutionException, TimeoutException, RpcException {
 //        CountDownLatch latch = new CountDownLatch(1);
-        RpcClient client = new RpcClient();
+        ClientConfig clientConfig = new ClientConfig();
+        HearBeatConfig hearBeatConfig = new HearBeatConfig();
+//        hearBeatConfig.setUseful(true);
+        clientConfig.setHearBeatConfig(hearBeatConfig);
+
+        RpcClient client = new RpcClient(clientConfig);
         try {
             client.start();
         } catch (InitializationException e) {
