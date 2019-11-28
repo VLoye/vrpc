@@ -17,5 +17,6 @@ public class HearBeatConfig {
     private byte[] msg = "msg".getBytes();
     private byte[] ack = "ack".getBytes();
 
-
+    public HearBeatConfig() {
+    }
 }

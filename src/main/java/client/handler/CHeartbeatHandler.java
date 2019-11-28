@@ -1,14 +1,14 @@
-package client;
+package client.handler;
 /**
  * Created by V on 2019/9/22.
  */
 
+import client.core.ClientConfig;
 import core.config.HearBeatConfig;
 import io.netty.channel.*;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.service.AbstractService;
 
 /**
  * @author V
@@ -17,16 +17,16 @@ import server.service.AbstractService;
  **/
 public class CHeartbeatHandler extends SimpleChannelInboundHandler<Object> {
     private static final Logger logger = LoggerFactory.getLogger(CHeartbeatHandler.class);
-    private HearBeatConfig config;
+    private ClientConfig config;
 
-    public CHeartbeatHandler(HearBeatConfig config) {
+    public CHeartbeatHandler(ClientConfig config) {
         this.config = config;
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
-            if (!config.isUseful()) {
+            if (!config.isUseHeartbeat()) {
                 super.userEventTriggered(ctx, evt);
                 return;
             }
@@ -48,7 +48,7 @@ public class CHeartbeatHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (!config.isUseful()){
+        if (!config.isUseHeartbeat()){
             ctx.fireChannelRead(msg);
             return;
         }

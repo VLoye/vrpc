@@ -19,6 +19,7 @@ import java.util.concurrent.CountDownLatch;
  * @Description
  **/
 public class ServerMain {
+    public static final String SERVICE_CLASS_NAME = "server.service.JDKSerializeService";
 
 
     public static void main(String[] args) throws InterruptedException {
@@ -29,7 +30,7 @@ public class ServerMain {
         RpcConfig config = new RpcConfig();
         List<ServiceConfig> serviceConfigs = new ArrayList<ServiceConfig>();
         ServiceConfig serviceConfig = new ServiceConfig();
-        serviceConfig.setServiceClassName("server.service.JDKSerializeService");
+        serviceConfig.setServiceClassName(SERVICE_CLASS_NAME);
         serviceConfigs.add(serviceConfig);
         serviceConfig.setHearBeatConfig(hearBeatConfig);
         config.setConfigs(serviceConfigs);

@@ -1,4 +1,4 @@
-package client;
+package client.core;
 /**
  * Created by VLoye on 2019/9/4.
  */

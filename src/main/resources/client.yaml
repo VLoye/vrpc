@@ -1,0 +1,13 @@
+client:
+    manager:
+        conns: [
+            con: 127.0.0.1:9999
+            ],
+            []
+        strategy: 1
+    conn:
+        heartbeat:
+            use: true
+            msg: "msg"
+            ack: "ack"
+        idletimeout: 60000

@@ -21,9 +21,10 @@ import java.util.concurrent.*;
  **/
 public class RpcServer {
     private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
+    private static final int MAX_QUEUE_SIZE = 1024;
 
     protected RpcConfig config;
-    protected static BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(1024);
+    protected static BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(MAX_QUEUE_SIZE);
     public static ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 8, 30000, TimeUnit.MILLISECONDS, queue);
     public static Map<String, Object> interfaceCacheMap = new ConcurrentHashMap<String, Object>();
 

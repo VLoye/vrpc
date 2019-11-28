@@ -34,6 +34,12 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcMessage> {
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("Establish a connection from Address[{}], channelId = {}",ctx.channel().remoteAddress(),ctx.channel().id().asShortText());
+        super.channelActive(ctx);
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.error(cause.getMessage());
         super.exceptionCaught(ctx, cause);
