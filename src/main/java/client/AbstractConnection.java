@@ -183,4 +183,9 @@ public abstract class AbstractConnection implements IConnection {
     public String getAddress() {
         return addr;
     }
+
+    @Override
+    public Channel getChannel() {
+        return channel;
+    }
 }

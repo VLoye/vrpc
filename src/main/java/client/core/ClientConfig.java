@@ -3,6 +3,7 @@ package client.core;
  * Created by V on 2019/9/22.
  */
 
+import client.AService;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
  **/
 @Data
 public class ClientConfig {
+    private Class<?> service;
+
     private List<String> addrs = new ArrayList<String>();
     /**
      * road balance strategy
@@ -37,6 +40,8 @@ public class ClientConfig {
     private int strategy;
 //    private int retries;
 //    private boolean useRetry;
+
+    private long requestTimeout;
 
     //The time of idle timeout.
     private long idleTimeout;
@@ -51,9 +56,11 @@ public class ClientConfig {
     public ClientConfig() {
     }
 
-    public ClientConfig(List<String> addrs, int strategy, long idleTimeout, boolean useHeartbeat, byte[] msg, byte[] ack) {
+    public ClientConfig(Class<?> service, List<String> addrs, int strategy, long requestTimeout, long idleTimeout, boolean useHeartbeat, byte[] msg, byte[] ack) {
+        this.service = service;
         this.addrs = addrs;
         this.strategy = strategy;
+        this.requestTimeout = requestTimeout;
         this.idleTimeout = idleTimeout;
         this.useHeartbeat = useHeartbeat;
         this.msg = msg;
@@ -65,20 +72,32 @@ public class ClientConfig {
     }
 
     public static class Builder {
+        private Class<?> service;
         private List<String> addrs = new ArrayList<String>();
         private int strategy;
+        private long requestTimeout;
         private long idleTimeout;
         private boolean useHeartbeat;
         private byte[] msg;
         private byte[] ack;
 
         public Builder() {
+            this.service = AService.class;
             this.addrs = Arrays.stream(new String[]{"127.0.0.1:9999"}).collect(Collectors.toList());
             this.strategy = 1;
-            this.idleTimeout = 30000;
+            this.idleTimeout = 30 * 1000;
             this.useHeartbeat = false;
-            this.msg = "msg".getBytes();;
+            this.msg = "msg".getBytes();
+            this.requestTimeout = 30 * 1000;
             this.ack = "ack".getBytes();
+        }
+
+        public Class<?> getService() {
+            return service;
+        }
+
+        public void setService(Class<?> service) {
+            this.service = service;
         }
 
         public List<String> getAddrs() {
@@ -95,6 +114,14 @@ public class ClientConfig {
 
         public void setStrategy(int strategy) {
             this.strategy = strategy;
+        }
+
+        public long getRequestTimeout() {
+            return requestTimeout;
+        }
+
+        public void setRequestTimeout(long requestTimeout) {
+            this.requestTimeout = requestTimeout;
         }
 
         public long getIdleTimeout() {
@@ -128,8 +155,9 @@ public class ClientConfig {
         public void setAck(byte[] ack) {
             this.ack = ack;
         }
-        public ClientConfig build(){
-            return new ClientConfig(addrs,strategy,idleTimeout, useHeartbeat,msg,ack);
+
+        public ClientConfig build() {
+            return new ClientConfig(service, addrs, strategy, requestTimeout, idleTimeout, useHeartbeat, msg, ack);
         }
     }
 }

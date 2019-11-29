@@ -34,7 +34,7 @@ import java.util.concurrent.TimeoutException;
  * @Classname RpcClient
  * @Description
  **/
-public class RpcClient implements ILifeCycle{
+public class RpcClient implements ILifeCycle {
     private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
     private ConnManager manager;
     private ClientConfig config;
@@ -51,13 +51,17 @@ public class RpcClient implements ILifeCycle{
 
 
     public ResponseFuture call(RpcRequestMessage message, long timeout) throws RpcException {
+        long startTime = System.currentTimeMillis();
+        long fetchConnectionTime = 0L;
         IConnection connection = null;
         try {
             connection = manager.getConn(timeout);
+            fetchConnectionTime = System.currentTimeMillis();
+            logger.debug("Request Message[sessionId = {}] fetch a connection[{channelId = {}}]", message.getSessionId(), connection.getChannel().id().asShortText());
             return connection.call(message);
         } catch (RequestTimeoutException e) {
             throw new RpcException(e);
-        }finally {
+        } finally {
             recycle(connection);
         }
 
@@ -70,6 +74,7 @@ public class RpcClient implements ILifeCycle{
 
 
     public static void main(String[] args) throws NoSuchMethodException, InterruptedException, ExecutionException, TimeoutException, RpcException {
+/*
 
         ClientConfig clientConfig = ClientConfig.custom().build();
 
@@ -89,7 +94,14 @@ public class RpcClient implements ILifeCycle{
         ResponseFuture future = client.call(message,30000);
         Object o = future.get(30000, TimeUnit.MILLISECONDS);
         System.out.println(o);
+*/
+
 //        latch.await();
+
+        IInterface service = RpcProxyFactory.proxy(IInterface.class);
+        String result = service.dothing("aaaaa");
+        System.out.println(result);
+        System.out.println(service.toString());
     }
 
     @Override
@@ -108,7 +120,7 @@ public class RpcClient implements ILifeCycle{
     }
 
     private void initIfNeed() throws LifeCycleException {
-        if(status.equals(ServiceStatus.NEW)){
+        if (status.equals(ServiceStatus.NEW)) {
             init();
         }
     }
@@ -116,6 +128,10 @@ public class RpcClient implements ILifeCycle{
     @Override
     public void close() throws LifeCycleException {
 
+    }
+
+    public ClientConfig getConfig() {
+        return config;
     }
 }
 

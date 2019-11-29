@@ -7,7 +7,7 @@ package client; /**
  * @Classname client.AService
  * @Description
  **/
-public class AService {
+public class AService implements IInterface{
 
     public String dothing(String msg){
         return msg.toUpperCase();

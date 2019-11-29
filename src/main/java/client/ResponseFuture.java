@@ -23,10 +23,18 @@ public class ResponseFuture implements Future<Object> {
     private List<IListener> listeners = new ArrayList<IListener>();
     private static final Object SIGNAL_SUCCESS = new Object();
     private static final Object SIGNAL_FAILURE = new Object();
+    private static final Long MAX_TIMEOUT = 120 * 1000L;
+    private Long timeout = 0L;
 
     private Object result;
     private Object signal;
 
+    public ResponseFuture() {
+    }
+
+    public ResponseFuture(Long timeout) {
+        this.timeout = timeout;
+    }
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
@@ -46,7 +54,7 @@ public class ResponseFuture implements Future<Object> {
     public void setSuccess(Object result) {
         this.result = result;
         this.signal = SIGNAL_SUCCESS;
-        synchronized (this){
+        synchronized (this) {
             notifyAll();
             notifyListener();
         }
@@ -71,6 +79,13 @@ public class ResponseFuture implements Future<Object> {
     @Override
     @Deprecated
     public Object get() throws InterruptedException, ExecutionException {
+        
+//        if (timeout == 0) {
+//            return get(timeout, TimeUnit.MILLISECONDS);
+//        } else {
+//            return get(MAX_TIMEOUT, TimeUnit.MILLISECONDS);
+//        }
+        // TODO: 2019/11/29  
         return null;
     }
 

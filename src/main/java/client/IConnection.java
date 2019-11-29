@@ -9,6 +9,7 @@ package client;
 import client.core.ClientConfig;
 import core.exc.ConnectionException;
 import core.message.RpcRequestMessage;
+import io.netty.channel.Channel;
 
 /**
  * @author V
@@ -40,5 +41,6 @@ public interface IConnection {
 
     String getAddress();
 
+    Channel getChannel();
 
 }
