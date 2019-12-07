@@ -14,6 +14,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  **/
 public class RpcMessage implements Serializable{
     protected transient static final AtomicInteger index = new AtomicInteger(10000);
+    /**
+     * 0x01 request
+     * 0x02 response
+     */
     protected byte type;
     protected int id;
     protected String sessionId;
