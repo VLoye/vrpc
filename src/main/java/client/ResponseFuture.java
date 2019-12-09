@@ -7,6 +7,7 @@ import client.core.IListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -20,16 +21,22 @@ import java.util.concurrent.TimeoutException;
  * @Description
  **/
 public class ResponseFuture implements Future<Object> {
-    private List<IListener> listeners = new ArrayList<IListener>();
+    private List<IListener> listeners = new LinkedList<IListener>();
     private static final Object SIGNAL_SUCCESS = new Object();
     private static final Object SIGNAL_FAILURE = new Object();
     private static final Long MAX_TIMEOUT = 120 * 1000L;
+    private String sessionId;
     private Long timeout = 0L;
 
     private Object result;
     private Object signal;
 
-    public ResponseFuture() {
+    public ResponseFuture(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 
     public ResponseFuture(Long timeout) {
@@ -64,6 +71,10 @@ public class ResponseFuture implements Future<Object> {
         this.listeners.add(listener);
     }
 
+    public void addListenerFirst(IListener listener) {
+        this.listeners.add(0, listener);
+    }
+
     public void removeListener(IListener listener) {
         this.listeners.remove(listener);
     }
@@ -72,14 +83,14 @@ public class ResponseFuture implements Future<Object> {
         Iterator<IListener> iterator = this.listeners.iterator();
         while (iterator.hasNext()) {
             IListener listener = iterator.next();
-            listener.operationComplete();
+            listener.operationComplete(this);
         }
     }
 
     @Override
     @Deprecated
     public Object get() throws InterruptedException, ExecutionException {
-        
+
 //        if (timeout == 0) {
 //            return get(timeout, TimeUnit.MILLISECONDS);
 //        } else {

@@ -84,7 +84,7 @@ public abstract class AbstractConnection implements IConnection {
         bootstrap = new Bootstrap();
         group = new NioEventLoopGroup(2);
         bootstrap.group(group)
-                .attr(KEY_MANAGER,manager)
+                .attr(KEY_MANAGER, manager)
                 .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -126,7 +126,7 @@ public abstract class AbstractConnection implements IConnection {
 
     @Override
     public ResponseFuture call(RpcRequestMessage message) {
-        ResponseFuture future = new ResponseFuture();
+        ResponseFuture future = new ResponseFuture(message.getSessionId());
         manager.futuresMap.put(message.getId(), future);
         try {
             channel.writeAndFlush(message);

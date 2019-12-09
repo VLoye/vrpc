@@ -76,7 +76,7 @@ public class RpcClient implements ILifeCycle {
     public static void main(String[] args) throws NoSuchMethodException, InterruptedException, ExecutionException, TimeoutException, RpcException {
 /*
 
-        ClientConfig clientConfig = ClientConfig.custom().build();
+        ClientConfig clientConfig = ClientConfig.def().build();
 
         RpcClient client = new RpcClient(clientConfig);
         try {

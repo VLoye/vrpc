@@ -47,6 +47,7 @@ public class ClientProxyInvocationHandler implements InvocationHandler {
                 request.setParamTypes(resolveParameterTypes(args));
                 request.setArgs(args);
                 request.setReply(true);
+//                should not do this here?  todo
                 request.setSessionId(RpcUtil.UUID());
 //                request.setType(0x01);
                 ResponseFuture future = client.call(request, client.getConfig().getRequestTimeout());

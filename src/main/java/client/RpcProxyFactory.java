@@ -6,8 +6,6 @@ import client.core.ClientConfig;
 import core.LifeCycleException;
 import core.exc.RpcException;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
@@ -16,16 +14,27 @@ import java.lang.reflect.Proxy;
  */
 public class RpcProxyFactory {
 
-    public static <T> T proxy(Class<T> clazz) throws RpcException{
-//        return Proxy.newProxyInstance(ProxyFactory.class.getClassLoader(), new Class<?>[]{clazz}, InvocationHandlerFactory.getInvocation());
-        ClientConfig clientConfig = ClientConfig.custom().build();
+    public static <T> T proxy(Class<T> clazz) throws RpcException {
+        return getProxy(clazz,null);
+    }
+
+    public static <T> T proxy(Class<T> clazz, ClientConfig config) throws RpcException {
+        return getProxy(clazz,config);
+    }
+
+    private static <T> T getProxy(Class<T> clazz, ClientConfig config) throws RpcException {
+        ClientConfig clientConfig = config;
+        if(clientConfig == null){
+            clientConfig = ClientConfig.def().build();
+        }
         RpcClient client = new RpcClient(clientConfig);
         try {
             client.start();
         } catch (LifeCycleException e) {
             throw new RpcException(e.getMessage());
         }
-        T t = (T) Proxy.newProxyInstance(RpcProxyFactory.class.getClassLoader(), new Class[]{clazz},new ClientProxyInvocationHandler(client));
+        T t = (T) Proxy.newProxyInstance(RpcProxyFactory.class.getClassLoader(), new Class[]{clazz}, new ClientProxyInvocationHandler(client));
         return t;
     }
+
 }

@@ -3,6 +3,7 @@ package client.core;
  * Created by VLoye on 2019/9/4.
  */
 
+import client.ResponseFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,13 +15,14 @@ import org.slf4j.LoggerFactory;
 public interface IListener {
 
 
-    void operationComplete();
+    void operationComplete(ResponseFuture future);
 
     IListener completeListener = new IListener() {
         private final Logger logger = LoggerFactory.getLogger(completeListener.getClass());
+
         @Override
-        public void operationComplete() {
-            logger.info("listener notify success");
+        public void operationComplete(ResponseFuture future) {
+            logger.debug("Future[sessionId={}] success.", future.getSessionId());
         }
     };
 

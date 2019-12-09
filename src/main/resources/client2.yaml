@@ -1,0 +1,14 @@
+client:
+  services:
+  strategy: 1
+  address:
+    - 127.0.0.1:9999
+    - 127.0.0.1:9998
+  idleTimeout: 30000
+  useHeartbeat: true
+  hearbeat:
+    use: true
+    msg: msg
+    ack: ack
+  requestTimeout: 30000
+  reConnectInterval: 60000

@@ -67,7 +67,11 @@ public class ClientConfig {
         this.ack = ack;
     }
 
-    public static ClientConfig.Builder custom() {
+    public static ClientConfig.Builder custom(Class<?> service, List<String> addrs, int strategy, long requestTimeout, long idleTimeout, boolean useHeartbeat, byte[] msg, byte[] ack) {
+        return new Builder(service, addrs, strategy, requestTimeout, idleTimeout, useHeartbeat, msg, ack);
+    }
+
+    public static ClientConfig.Builder def() {
         return new Builder();
     }
 
@@ -80,6 +84,17 @@ public class ClientConfig {
         private boolean useHeartbeat;
         private byte[] msg;
         private byte[] ack;
+
+        public Builder(Class<?> service, List<String> addrs, int strategy, long requestTimeout, long idleTimeout, boolean useHeartbeat, byte[] msg, byte[] ack) {
+            this.service = service;
+            this.addrs = addrs;
+            this.strategy = strategy;
+            this.requestTimeout = requestTimeout;
+            this.idleTimeout = idleTimeout;
+            this.useHeartbeat = useHeartbeat;
+            this.msg = msg;
+            this.ack = ack;
+        }
 
         public Builder() {
             this.service = AService.class;
