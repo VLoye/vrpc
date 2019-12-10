@@ -34,7 +34,7 @@ RPC调用层：效率、权限验证、身份校验、
 +-----+-------+----+------+--------------------+-------+-------+--------+-----+
 |magic|version|type|switch|        sessionId           |timeout|protocol|codec|
 +-----+-------+----+------+----------------------------+-------+--------+-----+
-|                    datas  …                                  |     crc      +
+|   header  ...           |       body  ...                    |     crc      +
 +-----+-------+----+------+--------------------+-------+-------+--------+-----+
 
 magic 魔数，能快判断出当前请求消息是否合法，
@@ -55,6 +55,9 @@ protocol datas协议类型，binary or serialize
 codec serialize type,
     0x01 jdk
     0x02 hessian
+
+header
+    some option
 
 data
     request  request
