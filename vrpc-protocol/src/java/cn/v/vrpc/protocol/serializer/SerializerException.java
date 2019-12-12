@@ -1,4 +1,4 @@
-package cn.v.vrpc.protocol;
+package cn.v.vrpc.protocol.serializer;
 
 public class SerializerException extends Exception {
     public SerializerException() {

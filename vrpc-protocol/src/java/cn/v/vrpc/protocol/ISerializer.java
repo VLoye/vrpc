@@ -1,6 +1,8 @@
 package cn.v.vrpc.protocol;
 
-public interface ISerializerUtil {
+import cn.v.vrpc.protocol.serializer.SerializerException;
+
+public interface ISerializer {
     byte[] doSerialize(Object o) throws SerializerException;
 
     Object deSerialize(byte[] bytes) throws SerializerException;

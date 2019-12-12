@@ -1,14 +1,14 @@
-package cn.v.vrpc.protocol;
+package cn.v.vrpc.protocol.rpc;
 
 //        通用私有协议设计 ***
 //        0     1       2    3      4                    18      20     22       23     24
 //        +-----+-------+----+------+--------------------+-------+-------+--------+-----+
 //        |magic|version|type|switch|        sessionId           |timeout|protocol|codec|
 //        +-----+-------+----+------+----------------------------+-------+--------+-----+
-//        |   header  ...           |       body  ...                    |     crc      +
+//        | headLen     |  bodyLen  |   header  ...    |    body  ...    |    crc      +
 //        +-----+-------+----+------+--------------------+-------+-------+--------+-----+
 
-public class MessageFrame {
+public class RpcMessageFrame {
     private byte magic;
     private byte version;
     private byte type;
@@ -21,8 +21,8 @@ public class MessageFrame {
     private Object body;
     private int crc;
 
-    public MessageFrame(byte magic, byte version, byte type, byte switchOption, String sessionId,
-                        short timeout, byte protocol, byte codec, Object header, Object body) {
+    public RpcMessageFrame(byte magic, byte version, byte type, byte switchOption, String sessionId,
+                           short timeout, byte protocol, byte codec, Object header, Object body) {
         this.magic = magic;
         this.version = version;
         this.type = type;

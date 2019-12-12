@@ -1,7 +1,7 @@
 package cn.v.vrpc.protocol.codec;
 
 import cn.v.vrpc.protocol.ICodec;
-import cn.v.vrpc.protocol.MessageFrame;
+import cn.v.vrpc.protocol.rpc.RpcMessageFrame;
 import cn.v.vrpc.protocol.utils.CloseableUtil;
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import io.netty.buffer.ByteBuf;
@@ -15,10 +15,14 @@ import java.util.List;
 
 public abstract class AbstractCodec implements ICodec {
     private static final Logger logger = LoggerFactory.getLogger(AbstractCodec.class);
-    protected List<MessageFrame> messageFrames = new ArrayList<>();
+    protected List<RpcMessageFrame> rpcMessageFrames = new ArrayList<>();
 
 
     protected void doSerializer(Object o, ByteBuf out) {
+        if(o == null){
+            out.writeShort(0);
+            return;
+        }
         ByteOutputStream bos = null;
         ObjectOutputStream oos = null;
         try {
@@ -26,7 +30,7 @@ public abstract class AbstractCodec implements ICodec {
             oos = new ObjectOutputStream(bos);
             oos.writeObject(o);
             byte[] bytes = bos.getBytes();
-            out.writeInt(bytes.length);
+            out.writeShort(bytes.length);
             out.writeBytes(bytes);
         } catch (IOException e) {
             logger.error(e.getMessage());

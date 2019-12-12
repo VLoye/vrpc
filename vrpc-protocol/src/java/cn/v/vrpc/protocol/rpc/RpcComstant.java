@@ -1,4 +1,4 @@
-package cn.v.vrpc.protocol.constant;
+package cn.v.vrpc.protocol.rpc;
 
 public interface RpcComstant {
     int BASE_LENGTH = 24;
