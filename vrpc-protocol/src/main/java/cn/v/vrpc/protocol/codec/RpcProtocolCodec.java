@@ -18,30 +18,33 @@ public class RpcProtocolCodec extends AbstractCodec {
     private static final Logger logger = LoggerFactory.getLogger(RpcProtocolCodec.class);
 
     @Override
-    public void encode(ChannelHandlerContext context, RpcMessageFrame rpcMessageFrame, ByteBuf out) throws CodecException {
-        out.writeByte(rpcMessageFrame.getMagic());
-        out.writeByte(rpcMessageFrame.getVersion());
-        out.writeByte(rpcMessageFrame.getType());
-        out.writeByte(rpcMessageFrame.getSwitchOption());
-        out.writeBytes(rpcMessageFrame.getSessionId().getBytes(), 0, 16);
-        out.writeShort(rpcMessageFrame.getTimeout());
-        out.writeByte(rpcMessageFrame.getProtocol());
-        out.writeByte(rpcMessageFrame.getCodec());
-        doSerializer(rpcMessageFrame.getHeader(), out);
-        doSerializer(rpcMessageFrame.getBody(), out);
-        out.markReaderIndex();
-        byte[] bytes = new byte[out.readableBytes()];
-        out.readBytes(bytes);
-        out.writeInt(CrcUtil.evalCrc32(bytes));
-        out.resetReaderIndex();
-        //crc
+    public void encode(ChannelHandlerContext context, Transportable transportableMsg, ByteBuf out) throws CodecException {
+        if (transportableMsg instanceof RpcMessageFrame) {
+            RpcMessageFrame rpcMessageFrame = (RpcMessageFrame) transportableMsg;
+            out.writeByte(rpcMessageFrame.getMagic());
+            out.writeByte(rpcMessageFrame.getVersion());
+            out.writeByte(rpcMessageFrame.getType());
+            out.writeByte(rpcMessageFrame.getSwitchOption());
+            out.writeBytes(rpcMessageFrame.getSessionId().getBytes(), 0, 16);
+            out.writeShort(rpcMessageFrame.getTimeout());
+            out.writeByte(rpcMessageFrame.getProtocol());
+            out.writeByte(rpcMessageFrame.getCodec());
+            doSerializer(rpcMessageFrame.getHeader(), out);
+            doSerializer(rpcMessageFrame.getBody(), out);
+            out.markReaderIndex();
+            byte[] bytes = new byte[out.readableBytes()];
+            out.readBytes(bytes);
+            out.writeInt(CrcUtil.evalCrc32(bytes));
+            out.resetReaderIndex();
+            //crc
+        }
     }
 
 
     @Override
-    public void decode(ChannelHandlerContext context, ByteBuf in, List<RpcMessageFrame> out) throws CodecException {
+    public void decode(ChannelHandlerContext context, ByteBuf in, List<Object> out) throws CodecException {
         if (in.readableBytes() < RpcComstant.BASE_LENGTH) {
-            throw new CodecException("the length is shorter than base length 24");
+            throw new CodecException("message length is shorter than base length: " + RpcComstant.BASE_LENGTH);
         }
         in.markReaderIndex();
         byte magic = in.readByte();
