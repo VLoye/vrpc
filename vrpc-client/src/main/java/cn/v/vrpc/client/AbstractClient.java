@@ -1,8 +1,11 @@
 package cn.v.vrpc.client;
+import jdk.nashorn.internal.runtime.linker.Bootstrap;
+
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**
+ * Implement for Remote transport client
  * v
  * 2019/12/16 下午9:53
  * 1.0
@@ -19,6 +22,8 @@ public abstract class AbstractClient extends AbstractLifeCycle implements IClien
     private ConnectionEventListener connectionEventListener;
 
     private Map<CommandCode, ExecutorService> userProcessors;
+
+
 
     protected boolean isStartup(){
         return isStartup.get() == true;
@@ -54,20 +59,20 @@ public abstract class AbstractClient extends AbstractLifeCycle implements IClien
         return null;
     }
 
-    @Override
-    public void callWithCallback(URL url, Object message) {
-
-    }
-
-    @Override
-    public void callWithCallback(URL url, InvokeContext context, Object body) {
-
-    }
-
-    @Override
-    public void callWithCallback(InvokeContext context, Object body) {
-
-    }
+//    @Override
+//    public void callWithCallback(URL url, Object message) {
+//
+//    }
+//
+//    @Override
+//    public void callWithCallback(URL url, InvokeContext context, Object body) {
+//
+//    }
+//
+//    @Override
+//    public void callWithCallback(InvokeContext context, Object body) {
+//
+//    }
 
     @Override
     public Connection getConn(URL url) {
