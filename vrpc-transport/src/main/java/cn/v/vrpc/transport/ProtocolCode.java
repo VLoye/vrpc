@@ -2,19 +2,38 @@ package cn.v.vrpc.transport;/**
  * Created by V on 2019/12/13.
  */
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * V
  * 2019/12/13 14:50
  */
 public class ProtocolCode {
+    private static CopyOnWriteArrayList<ProtocolCode> protocols = new CopyOnWriteArrayList<>();
     private byte code;
+    private String name;
 
-    public ProtocolCode(byte code) {
-        this.code = code;
+    static {
+        //add protocols define here.
+        protocols.add(new ProtocolCode((byte) 0x01, "rpc"));
     }
 
-    public static ProtocolCode fromCode(byte code){
-        return new ProtocolCode(code);
+    public ProtocolCode(byte code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+
+    public static ProtocolCode fromCode(byte code) {
+        return protocols.stream().filter(x -> x.code == code).findAny().orElse(null);
+    }
+
+    public static ProtocolCode formName(String name) {
+        return protocols.stream().filter(x -> x.name.equals(name)).findAny().orElse(null);
+    }
+
+    public static void registerProtocol(ProtocolCode protocolCode){
+        protocols.add(protocolCode);
     }
 
 
