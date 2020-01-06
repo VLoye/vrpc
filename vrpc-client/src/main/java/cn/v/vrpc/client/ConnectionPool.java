@@ -23,5 +23,9 @@ public class ConnectionPool {
         return selectStrategy.select(list);
     }
 
+    public void createConnection(Connection connection){
+        connections.add(connection);
+    }
+
 
 }

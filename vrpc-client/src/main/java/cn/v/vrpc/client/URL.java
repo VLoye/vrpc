@@ -21,6 +21,9 @@ public class URL {
 
     private Map<String, Object> options = new HashMap<>();
 
+    public URL() {
+    }
+
     public URL(String host, int port) {
         this.host = host;
         this.port = port;
@@ -58,5 +61,14 @@ public class URL {
 
     public String getPoolKey() {
         return poolKey;
+    }
+
+    @Override
+    public String toString() {
+        return "URL{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                ", options=" + options +
+                '}';
     }
 }

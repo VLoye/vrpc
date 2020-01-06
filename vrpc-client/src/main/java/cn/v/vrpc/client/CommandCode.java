@@ -6,4 +6,5 @@ package cn.v.vrpc.client;
  * 1.0
  */
 public class CommandCode {
+
 }

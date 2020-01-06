@@ -1,5 +1,6 @@
 package cn.v.vrpc.client.config;
 
+@Deprecated
 public interface OptionsKey {
     // common
     String NETTY_HIGH_WATER_MARK = "netty.high.water.mark";

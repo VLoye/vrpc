@@ -11,6 +11,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.AttributeKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -23,21 +26,26 @@ import java.rmi.RemoteException;
  * 1.0
  */
 public class ConnectionFactory {
-    private Bootstrap bootstrap;
-    private ConnectionOptions options;
-    private NioEventLoopGroup worker;
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 
-    public ConnectionFactory(ConnectionOptions options) {
+    protected Bootstrap bootstrap;
+    protected ConnectionOptions options;
+    protected NioEventLoopGroup worker;
+    protected HeartbeatTrigger heartbeatTrigger;
+
+    public static final AttributeKey<String> KEY_REQUEST_TIMEOUT = AttributeKey.newInstance("requestTimeout");
+
+    public ConnectionFactory(ConnectionOptions options, HeartbeatTrigger heartbeatTrigger) {
         this.options = options;
-        bootstrap = new Bootstrap();
+        this.heartbeatTrigger = heartbeatTrigger;
         worker = new NioEventLoopGroup((Integer) options.getOrDefault(OptionsKey.NETTY_IO_THREADS, 0));
         init();
     }
 
     private void init() {
+        bootstrap = new Bootstrap();
         initConfigOptions();
-        String protocolName = (String) options.getOrDefault(OptionsKey.CONNECTION_PROTOCOL, "rpc");
-//        int idleTimeout = Integer.valueOf(options.getOrDefault(OptionsKey.CONNECTION_IDLE_TIMEOUT, OptionsKey.CONNECTION_IDLE_TIMEOUT_DEFAULT));
+        String protocolName = (String) options.getOrDefault(OptionsKey.CONNECTION_PROTOCOL, OptionsKey.CONNECTION_PROTOCOL_DEFAULT);
         bootstrap.channel(NioSocketChannel.class)
                 .group(worker)
                 .handler(new ChannelInitializer<SocketChannel>() {
@@ -46,7 +54,12 @@ public class ConnectionFactory {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast("BaseEncoder", new BaseEncoder(ProtocolCode.formName(protocolName)));
                         pipeline.addLast("BaseDecoder", new BaseDecoder());
-//                        pipeline.addLast("IdleHandler", new IdleStateHandler());
+                        if (options.containOptions(ConnectionOptions.OptionsKey.CONNECTION_IDLE_TIMEOUT)) {
+                            int idleTimeout = (int) options.getOrDefault(OptionsKey.CONNECTION_IDLE_TIMEOUT, OptionsKey.CONNECTION_IDLE_TIMEOUT_DEFAULT);
+                            pipeline.addLast("IdleHandler", new IdleStateHandler(idleTimeout, idleTimeout, 0));
+                            pipeline.addLast("HeartbeatHandler", new HeartbeatHandler(heartbeatTrigger));
+                        }
+                        pipeline.addLast("ChannelEventHandler", new ChannelEventHandler());
                     }
                 });
 
@@ -77,6 +90,7 @@ public class ConnectionFactory {
         if (!future.isSuccess()) {
             throw new Exception(future.cause().getMessage());
         }
+        logger.info("connect to [{}:{}]", url.getHost(), url.getPort());
         return future.channel();
     }
 }
