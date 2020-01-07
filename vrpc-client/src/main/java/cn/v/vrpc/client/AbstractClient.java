@@ -28,7 +28,7 @@ public abstract class AbstractClient extends AbstractLifeCycle implements IClien
 
     public AbstractClient() {
         this.urlParser = new URLParser();
-        this.connectionManager = new ConnectionManager();
+        this.connectionManager = new ConnectionManager(new RandomSelectStrategy());
 
     }
 
@@ -89,7 +89,7 @@ public abstract class AbstractClient extends AbstractLifeCycle implements IClien
     @Override
     public Connection getConn(String url) throws RemotingException {
         URL u = urlParser.parse(url);
-        ConnectionPool pool = connectionManager.getConnectionPoolAndPutIfAbsent(u.getPoolKey());
+        ConnectionPool pool = connectionManager.getConnectionPoolAndPutIfAbsent(u);
         return pool.get();
     }
 

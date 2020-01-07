@@ -3,6 +3,8 @@ package cn.v.vrpc.client;
  * Created by VLoye on 2019/8/26.
  */
 
+import cn.v.vrpc.protocol.Transportable;
+
 import java.io.Serializable;
 
 /**
@@ -10,7 +12,7 @@ import java.io.Serializable;
  * @Classname RpcRequestMessage
  * @Description
  **/
-public class RpcRequestMessage implements Serializable {
+public class RpcRequestMessage implements Serializable, Transportable {
     protected String className;
     protected String method;
     protected Class<?>[] paramTypes;

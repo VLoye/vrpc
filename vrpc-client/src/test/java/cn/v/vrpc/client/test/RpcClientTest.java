@@ -14,7 +14,8 @@ public class RpcClientTest {
     public static void main(String[] args) throws InterruptedException, RemotingException {
         ConnectionOptions options = new ConnectionOptions();
         VrpcClientAdapter adapter = new VrpcClientAdapter();
-        Object o = adapter.syncInvoke("127.0.0.1:9527?key1=val1&key2=val2","xxx");
+        RpcProtocolV1MessageFactory factory = new RpcProtocolV1MessageFactory();
+        Object o = adapter.syncInvoke("127.0.0.1:9527?key1=val1&key2=val2",factory.request());
 
     }
 

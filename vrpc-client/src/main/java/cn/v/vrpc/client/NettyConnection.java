@@ -63,4 +63,9 @@ public class NettyConnection implements Connection {
         return responseFuture;
     }
 
+    @Override
+    public boolean isActive() {
+        return channel != null && channel.isActive();
+    }
+
 }

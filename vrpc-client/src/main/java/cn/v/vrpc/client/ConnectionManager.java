@@ -18,19 +18,23 @@ public class ConnectionManager {
 
     private Map<String, ConnectionPoolRecordTask> connectionPoolTasks = new ConcurrentHashMap<String, ConnectionPoolRecordTask>();
 
-    private URL url;
+//    private URL url;
     private ReconnectionTrigger reconnectionTrigger;
 
-    public ConnectionManager() {
+    private ConnectionSelectStrategy selectStrategy;
+
+    public ConnectionManager(ConnectionSelectStrategy selectStrategy) {
+        this.selectStrategy = selectStrategy;
     }
 
-    public ConnectionPool getConnectionPoolAndPutIfAbsent(String poolKey) throws RemotingException {
+    public ConnectionPool getConnectionPoolAndPutIfAbsent(URL url) throws RemotingException {
+        String poolKey = url.getPoolKey();
         ConnectionPoolRecordTask recordTask = null;
         ConnectionPoolCreateCallable createCallable = null;
         ConnectionPool pool = null;
 
         if (!connectionPoolTasks.containsKey(poolKey)) {
-            createCallable = new ConnectionPoolCreateCallable(url);
+            createCallable = new ConnectionPoolCreateCallable(url,selectStrategy);
             recordTask = new ConnectionPoolRecordTask(createCallable);
             ConnectionPoolRecordTask tmp = connectionPoolTasks.putIfAbsent(poolKey, recordTask);
             if (tmp == null) {

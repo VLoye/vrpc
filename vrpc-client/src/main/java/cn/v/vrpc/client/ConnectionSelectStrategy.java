@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ConnectionSelectStrategy {
 
-    Connection select(List connections);
+    Connection select(List<Connection> connections);
 }

@@ -14,4 +14,6 @@ public interface Connection {
 
     Object asyncInvoke(Object msg) throws RemotingException;
 
+    boolean isActive();
+
 }

@@ -8,7 +8,8 @@ package cn.v.vrpc.client;
 public class RpcProtocolV1MessageFactory implements MessageFactory<Object> {
     @Override
     public Object request() {
-        return null;
+        RpcRequestMessage message = new RpcRequestMessage("className","method",new Class[]{Integer.class},new Object[]{"params"});
+        return message;
     }
 
     @Override

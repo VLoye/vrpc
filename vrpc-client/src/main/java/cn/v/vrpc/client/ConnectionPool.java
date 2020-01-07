@@ -15,6 +15,11 @@ public class ConnectionPool {
     private CopyOnWriteArrayList connections;
     private ConnectionSelectStrategy selectStrategy;
 
+    public ConnectionPool(ConnectionSelectStrategy selectStrategy) {
+        connections = new CopyOnWriteArrayList();
+        this.selectStrategy = selectStrategy;
+    }
+
     public Connection get() {
         if (null == connections || connections.size() == 0) {
             return null;

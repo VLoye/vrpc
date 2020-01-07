@@ -3,6 +3,8 @@ package cn.v.vrpc.transport;/**
  */
 
 import cn.v.vrpc.protocol.IProtocol;
+import cn.v.vrpc.protocol.RpcProtocol;
+import cn.v.vrpc.protocol.rpc.RpcProtocolV1;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +16,9 @@ import java.util.Map;
 public class ProtocolManager {
     //todo  need concurrent? let me think a bit about it...
     private static Map<ProtocolCode,IProtocol> protocolMap = new HashMap<ProtocolCode,IProtocol>();
+    static {
+        protocolMap.put(new ProtocolCode((byte) 0x01, "rpc"), new RpcProtocol());
+    }
 
     public static void registerProtocol(ProtocolCode code, IProtocol protocol){
         protocolMap.put(code,protocol);
