@@ -20,4 +20,9 @@ public abstract class AbstractLifeCycle implements LifeCycle {
     public void shutdown() throws LifeCycleException {
 
     }
+
+    @Override
+    public void initialize() throws LifeCycleException {
+
+    }
 }

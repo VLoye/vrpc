@@ -1,5 +1,8 @@
 package cn.v.vrpc.client;
 
+import cn.v.vrpc.protocol.Transportable;
+import io.netty.channel.Channel;
+
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -9,11 +12,16 @@ import java.util.concurrent.TimeoutException;
  */
 public interface Connection {
 
-    Object syncInvoke(Object msg) throws RemotingException;
-    Object syncInvoke(Object msg,long timeout) throws RemotingException, TimeoutException;
+    Object syncInvoke(Transportable msg) throws RemotingException, InterruptedException;
+    Object syncInvoke(Transportable msg,long timeout) throws RemotingException, TimeoutException, InterruptedException;
 
-    Object asyncInvoke(Object msg) throws RemotingException;
+    ResponseFuture asyncInvoke(Transportable msg) throws RemotingException;
+    ResponseFuture asyncInvoke(Transportable msg, long time) throws RemotingException;
 
+
+    URL URL();
+    Channel getChannel();
+    void setChannel(Channel channel);
     boolean isActive();
 
 }

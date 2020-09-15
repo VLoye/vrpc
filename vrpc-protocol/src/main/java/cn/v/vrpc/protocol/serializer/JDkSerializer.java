@@ -2,6 +2,8 @@ package cn.v.vrpc.protocol.serializer;
 
 import cn.v.vrpc.protocol.ISerializer;
 import cn.v.vrpc.protocol.utils.CloseableUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.io.ByteArrayInputStream;
@@ -10,6 +12,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class JDkSerializer implements ISerializer {
+    private static final Logger logger = LoggerFactory.getLogger(JDkSerializer.class);
+
     @Override
     public byte[] doSerialize(Object o) throws SerializerException {
         ByteArrayOutputStream bos = null;
@@ -29,6 +33,9 @@ public class JDkSerializer implements ISerializer {
 
     @Override
     public Object deSerialize(byte[] bytes) throws SerializerException {
+        if (bytes.length == 0) {
+            return null;
+        }
         ByteArrayInputStream bis = null;
         ObjectInputStream ois = null;
         try {

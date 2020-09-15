@@ -1,8 +1,8 @@
 package cn.v.vrpc.protocol.rpc;
 
 import cn.v.vrpc.protocol.ICodec;
-import cn.v.vrpc.protocol.ProtocolFactory;
 import cn.v.vrpc.protocol.ProtocolHandler;
+import cn.v.vrpc.protocol.ProtocolManager;
 import cn.v.vrpc.protocol.codec.RpcProtocolCodec;
 
 public class RpcProtocolV1 {
@@ -10,7 +10,7 @@ public class RpcProtocolV1 {
 
     private ICodec codec ;
     private ProtocolHandler handler;
-    private ProtocolFactory factory;
+    private ProtocolManager factory;
 
     public RpcProtocolV1() {
         this.codec = new RpcProtocolCodec();

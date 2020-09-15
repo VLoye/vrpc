@@ -33,12 +33,8 @@ public class ClientProxyInvocationHandler implements InvocationHandler {
             return method.invoke(client, args);
         }
         switch (methodName) {
-            case "toString":
-                return client.toString();
             case "equal":
                 return client.equals(args[0]);
-            case "hashCode":
-                return client.hashCode();
             default: {
                 Class c = client.getConfig().getService();
                 RpcRequestMessage request = new RpcRequestMessage();

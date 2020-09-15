@@ -7,19 +7,10 @@ package cn.v.vrpc.client;
  */
 public class VrpcClientAdapter extends AbstractClient {
 
-
-    @Override
-    public void callWithCallback(String url, Object message) {
-
+    public VrpcClientAdapter() {
     }
 
-    @Override
-    public void callWithCallback(String url, InvokeContext context, Object body) {
-
-    }
-
-    @Override
-    public void callWithCallback(InvokeContext context, Object body) {
-
+    public VrpcClientAdapter(URLParser urlParser, ConnectionManager connectionManager) {
+        super(urlParser, connectionManager);
     }
 }

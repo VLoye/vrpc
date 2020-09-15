@@ -1,5 +1,7 @@
 package cn.v.vrpc.client.config;
 
+import cn.v.vrpc.client.Connection;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionOptions {
     private Map<String, Object> options = new ConcurrentHashMap<>();
 
-    public void setOptions(String key, String value) {
+    public void setOptions(String key, Object value) {
         options.put(key, value);
     }
 
@@ -27,6 +29,17 @@ public class ConnectionOptions {
         return options.containsKey(key);
     }
 
+    public static ConnectionOptions DEFAULT() {
+        ConnectionOptions connectionOptions = new ConnectionOptions();
+        connectionOptions.setOptions(OptionsKey.NETTY_HIGH_WATER_MARK, 65536);
+        connectionOptions.setOptions(OptionsKey.NETTY_LOW_WATER_MARK, 32768);
+        connectionOptions.setOptions(OptionsKey.NETTY_BOSS_THREADS, OptionsKey.NETTY_BOSS_THREADS_DEFAULT);
+        connectionOptions.setOptions(OptionsKey.NETTY_IO_THREADS, OptionsKey.NETTY_IO_THREADS_DEFAULT);
+        connectionOptions.setOptions(OptionsKey.CONNECTION_POOL_SIZE, OptionsKey.CONNECTION_POOL_SIZE_DEFAULT);
+        connectionOptions.setOptions(OptionsKey.CONNECTION_PROTOCOL, OptionsKey.CONNECTION_PROTOCOL_DEFAULT);
+        connectionOptions.setOptions(OptionsKey.CONNECTION_IDLE_TIMEOUT, OptionsKey.CONNECTION_IDLE_TIMEOUT_DEFAULT);
+        return connectionOptions;
+    }
 
 
     public interface OptionsKey {
@@ -34,7 +47,7 @@ public class ConnectionOptions {
         String NETTY_HIGH_WATER_MARK = "netty.high.water.mark";
         String NETTY_LOW_WATER_MARK = "netty.low.water.mark";
 
-        String NETTY_BOSS_THREADS= "bossThreads";
+        String NETTY_BOSS_THREADS = "bossThreads";
         int NETTY_BOSS_THREADS_DEFAULT = 1;
 
         String NETTY_IO_THREADS = "ioThreads";
@@ -50,10 +63,15 @@ public class ConnectionOptions {
         String CONNECTION_IDLE_TIMEOUT = "idleTimeout";
         int CONNECTION_IDLE_TIMEOUT_DEFAULT = 60 * 1000;
 
+        String TYPE = "type";
+        String TYPE_SERVER = "server";
+        String TYPE_CLIENT = "client";
+
         // client
 
 
         // server
+
         String SERVER_PORT = "port";
         int SERVER_PORT_DEFAULT = 9527;
 

@@ -22,15 +22,14 @@ public class RpcProtocolCodec extends AbstractCodec {
         if (transportableMsg instanceof RpcMessageFrame) {
             RpcMessageFrame rpcMessageFrame = (RpcMessageFrame) transportableMsg;
             out.writeByte(rpcMessageFrame.getMagic());
+            out.writeByte(rpcMessageFrame.getProtocol());
             out.writeByte(rpcMessageFrame.getVersion());
             out.writeByte(rpcMessageFrame.getType());
             out.writeByte(rpcMessageFrame.getSwitchOption());
-            out.writeBytes(rpcMessageFrame.getSessionId().getBytes(), 0, 16);
             out.writeShort(rpcMessageFrame.getTimeout());
-            out.writeByte(rpcMessageFrame.getProtocol());
-            out.writeByte(rpcMessageFrame.getCodec());
-            doSerializer(rpcMessageFrame.getHeader(), out);
-            doSerializer(rpcMessageFrame.getBody(), out);
+            out.writeByte(rpcMessageFrame.getSerializerType());
+            out.writeBytes(rpcMessageFrame.getId().getBytes(), 0, 16);
+            doSerializer(rpcMessageFrame.getHeader(), rpcMessageFrame.getBody(), out);
             out.markReaderIndex();
             byte[] bytes = new byte[out.readableBytes()];
             out.readBytes(bytes);
@@ -51,15 +50,15 @@ public class RpcProtocolCodec extends AbstractCodec {
         if (magic != RpcComstant.MAGIC) {
             throw new CodecException("Unknown message.");
         }
+        byte protocol = in.readByte();
         byte version = in.readByte();
         if (version == RpcProtocolV1.PROTOCOL_VERSION_1) {
             byte type = in.readByte();
             byte switchOption = in.readByte();
+            short timeout = in.readShort();
+            byte serializeType = in.readByte();
             byte[] sessionId = new byte[16];
             in.readBytes(sessionId);
-            short timeout = in.readShort();
-            byte protocol = in.readByte();
-            byte codec = in.readByte();
             short headLen = 0;
             short bodyLen = 0;
             byte[] headBytes = new byte[0];
@@ -90,12 +89,14 @@ public class RpcProtocolCodec extends AbstractCodec {
                 return;
             }
             in.resetReaderIndex();
-            byte[] bytes = new byte[28 + headLen + bodyLen];
+            byte[] bytes = new byte[RpcComstant.BASE_LENGTH + headLen + bodyLen];
             in.readBytes(bytes);
+            //consume four byte of crc
+            in.readInt();
             if (!CrcUtil.verCrc32(bytes, crc)) {
                 throw new CodecException("crc verification error");
             }
-            ISerializer serializerUtil = SerializerFactory.getSerializerById(codec);
+            ISerializer serializerUtil = SerializerFactory.getSerializerById(serializeType);
             try {
                 head = serializerUtil.deSerialize(headBytes);
                 body = serializerUtil.deSerialize(bodyBytes);
@@ -103,9 +104,9 @@ public class RpcProtocolCodec extends AbstractCodec {
                 throw new CodecException(e);
             }
 
-            RpcMessageFrame frame = new RpcMessageFrame(magic, version, type, switchOption, new String(sessionId), timeout, protocol, codec, head, body);
+            RpcMessageFrame frame = new RpcMessageFrame(magic, protocol, version, type, switchOption, timeout, serializeType, new String(sessionId), head, body);
             out.add(frame);
-            logger.debug("receive a valid message[sessionId = {}].", new String(sessionId));
+            logger.debug("receive a valid message[{}] form channel[{}].", new String(sessionId),context.channel().id().asShortText());
         } else {
             throw new CodecException("Unknown Version: " + version);
         }

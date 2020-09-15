@@ -1,6 +1,7 @@
 package cn.v.vrpc.client;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -28,9 +29,16 @@ public class ConnectionPool {
         return selectStrategy.select(list);
     }
 
+
+    public List<Connection> getAllConnections(){
+        return connections;
+    }
+
     public void createConnection(Connection connection){
         connections.add(connection);
     }
+
+
 
 
 }

@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -19,24 +20,36 @@ public abstract class AbstractCodec implements ICodec {
     protected List<RpcMessageFrame> rpcMessageFrames = new ArrayList<>();
 
 
-    protected void doSerializer(Object o, ByteBuf out) {
-        if(o == null){
-            out.writeShort(0);
-            return;
-        }
-        ByteArrayOutputStream bos = null;
-        ObjectOutputStream oos = null;
+    protected void doSerializer(Object header, Object body, ByteBuf out) {
+        ByteArrayOutputStream headerBos = null;
+        ObjectOutputStream headerOos = null;
+        byte[] headerBytes = new byte[0];
+        ByteArrayOutputStream bodyBos = null;
+        ObjectOutputStream bodyOos = null;
+        byte[] bodyBytes = new byte[0];
+
         try {
-            bos = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(bos);
-            oos.writeObject(o);
-            byte[] bytes = bos.toByteArray();
-            out.writeShort(bytes.length);
-            out.writeBytes(bytes);
+            if (header != null) {
+                headerBos = new ByteArrayOutputStream();
+                headerOos = new ObjectOutputStream(headerBos);
+                headerOos.writeObject(header);
+                headerBytes = headerBos.toByteArray();
+            }
+            if (body != null) {
+                bodyBos = new ByteArrayOutputStream();
+                bodyOos = new ObjectOutputStream(bodyBos);
+                bodyOos.writeObject(body);
+                bodyBytes = bodyBos.toByteArray();
+            }
+            out.writeShort(headerBytes.length);
+            out.writeShort(bodyBytes.length);
+            out.writeBytes(headerBytes);
+            out.writeBytes(bodyBytes);
         } catch (IOException e) {
             logger.error(e.getMessage());
         } finally {
-            CloseableUtil.safeRelease(bos, oos);
+            CloseableUtil.safeRelease(headerBos, headerOos, bodyBos, bodyOos);
         }
+
     }
 }

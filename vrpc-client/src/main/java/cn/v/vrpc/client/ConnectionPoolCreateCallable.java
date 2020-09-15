@@ -10,14 +10,26 @@ import java.util.concurrent.Callable;
  * 1.0
  */
 public class ConnectionPoolCreateCallable implements Callable<ConnectionPool> {
-    private URL url;
-    private ConnectionFactory connectionFactory;
-    private ConnectionSelectStrategy selectStrategy;
+    protected URL url;
+    protected ConnectionSelectStrategy selectStrategy;
+    protected ConnectionFactory connectionFactory;
+    protected ConnectionEventListener connectionEventListener;
 
-    public ConnectionPoolCreateCallable(URL url,ConnectionSelectStrategy selectStrategy) {
+
+    @Deprecated
+    public ConnectionPoolCreateCallable(URL url, ConnectionSelectStrategy selectStrategy) {
+        this(url, selectStrategy, new ConnectionFactory(new ConnectionOptions(), new HeartbeatTrigger(new RpcProtocolV1MessageFactory())));
+    }
+
+    public ConnectionPoolCreateCallable(URL url, ConnectionSelectStrategy selectStrategy, ConnectionFactory connectionFactory) {
+        this(url,selectStrategy,connectionFactory,null);
+    }
+
+    public ConnectionPoolCreateCallable(URL url, ConnectionSelectStrategy selectStrategy, ConnectionFactory connectionFactory, ConnectionEventListener connectionEventListener) {
         this.url = url;
         this.selectStrategy = selectStrategy;
-        this.connectionFactory = new ConnectionFactory(new ConnectionOptions(),new HeartbeatTrigger(new RpcProtocolV1MessageFactory()));
+        this.connectionFactory = connectionFactory;
+        this.connectionEventListener = connectionEventListener;
     }
 
     @Override

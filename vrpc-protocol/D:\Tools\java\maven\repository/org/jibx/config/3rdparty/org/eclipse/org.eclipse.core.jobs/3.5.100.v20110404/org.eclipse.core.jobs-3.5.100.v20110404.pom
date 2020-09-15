@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.jibx.config.3rdparty.org.eclipse</groupId>
+  <artifactId>org.eclipse.core.jobs</artifactId>
+  <version>3.5.100.v20110404</version>
+
+  <name>org.eclipse.core.jobs</name>
+  <description>Eclipse org.eclipse.core.jobs project</description>
+  <url>http://www.eclipse.org</url>
+  
+  <licenses>
+    <license>
+      <name>Eclipse Public License</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <comments>This jar is an exact copy of the eclipse artifact</comments>
+    </license>
+  </licenses>
+  
+  <organization>
+    <name>eclipse.org</name>
+    <url>http://www.eclipse.org</url>
+  </organization>
+  
+  <scm>
+    <url>scm:cvs:pserver:dev.eclipse.org:/cvsroot/eclipse:org.eclipse.core.jobs</url>
+  </scm>
+  
+  <developers>
+    <developer>
+      <organization>The eclipse foundation</organization>
+      <url>http://www.eclipse.org</url>
+      <name>Eclipse contributors</name>
+    </developer>
+  </developers>
+
+</project>
+

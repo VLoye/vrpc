@@ -1,5 +1,6 @@
 package cn.v.vrpc.client.config;
 
+import io.netty.channel.ChannelOption;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.HashMap;
@@ -26,14 +27,13 @@ public class Option {
 
     private HashMap<OptionConstant, Object> pool = new HashMap();
 
+
     // common
     public static final OptionConstant<Integer> NETTY_HIGH_WATER_MARK = new OptionConstant<Integer>("netty.high.water.mark");
     public static final OptionConstant<Integer> NETTY_LOW_WATER_MARK = new OptionConstant<Integer>("netty.low.water.mark");
 
-
     public static final OptionConstant<Integer> NETTY_BOSS_THREADS = new OptionConstant("bossThreads");
     int NETTY_BOSS_THREADS_DEFAULT = 1;
-    //
 
     int NETTY_IO_THREADS_DEFAULT = 0;
     public static final OptionConstant<Integer> NETTY_IO_THREADS = new OptionConstant("ioThreads");
@@ -50,7 +50,6 @@ public class Option {
     public static final OptionConstant<Long> CONNECTION_IDLE_TIMEOUT = new OptionConstant("idleTimeout");
 
     // client
-
     // server
 
 

@@ -4,6 +4,8 @@ import cn.v.vrpc.client.HeartbeatTrigger;
 import cn.v.vrpc.client.RpcProtocolV1MessageFactory;
 import cn.v.vrpc.client.ServerConnectionFactory;
 import cn.v.vrpc.client.config.ConnectionOptions;
+import cn.v.vrpc.client.rpc.AService;
+import cn.v.vrpc.client.rpc.IInterface;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -15,10 +17,12 @@ import java.util.concurrent.CountDownLatch;
 public class RpcServerTest {
 
     public static void main(String[] args) throws InterruptedException {
-         CountDownLatch latch = new CountDownLatch(1);
+        CountDownLatch latch = new CountDownLatch(1);
         HeartbeatTrigger heartbeatTrigger = new HeartbeatTrigger(new RpcProtocolV1MessageFactory());
         ConnectionOptions options = new ConnectionOptions();
-        ServerConnectionFactory factory = new ServerConnectionFactory(options,heartbeatTrigger);
+        ServerConnectionFactory factory = new ServerConnectionFactory(options, heartbeatTrigger);
+        AService aService = new AService();
+        factory.registerService(IInterface.class, aService);
         factory.start();
 
         latch.await();

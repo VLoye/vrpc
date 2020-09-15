@@ -1,6 +1,6 @@
 package cn.v.vrpc.client;
 
-import cn.v.vrpc.transport.ProtocolCode;
+import cn.v.vrpc.client.refactoring.Bad;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +10,7 @@ import java.util.Map;
  * 2019/12/13 下午9:28
  * 1.0
  */
+@Bad
 public class URL {
     private String host;
     private int port;
